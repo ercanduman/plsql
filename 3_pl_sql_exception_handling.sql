@@ -15,6 +15,12 @@ BEGIN
 		RAISE ve_invalidCustomerId;
 	END IF;
 
+	IF vn_numberOfCustomer < 0
+	THEN
+		--    raise_application_error(-20001, 'error_message= ERROR> error occured...'); -- stops running script and pop up the "error_message=" written there
+		RETURN; -- finishes whole running script and quit
+	END IF;
+	
 	-- Another option: you can have nested block to handle exception in the beginning
 	BEGIN
 		IF vs_customerName IS NULL
@@ -36,4 +42,6 @@ EXCEPTION
 		dbms_output.put_line('ERROR> Customer name should not be null');
 	WHEN OTHERS THEN
 		dbms_output.put_line('ERROR> An error occurred which is: ' || SQLERRM);
+		dbms_output.put_line(dbms_utility.format_error_backtrace); -- show line number that error occured! (much better than SQLERRM)
 END;
+/
